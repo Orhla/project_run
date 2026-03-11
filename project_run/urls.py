@@ -20,14 +20,16 @@ from django.conf.urls.static import static
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
-from app_run.views import RunViewSet, company_details, UserViewSet
+from app_run import views
 
 router = DefaultRouter()
-router.register('api/runs', RunViewSet)
-router.register('api/users', UserViewSet)
+router.register('api/runs', views.RunViewSet)
+router.register('api/users', views.UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/company_details/', company_details),
-    path('', include(router.urls))
+    path('api/company_details/', views.company_details),
+    path('', include(router.urls)),
+    path('api/runs/<int:run_id>/start/', views.StartRunView.as_view()),
+    path('api/runs/<int:run_id>/stop/', views.StopRunView.as_view()),
 ] + debug_toolbar_urls()

@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework.filters import SearchFilter
 from .models import Run
@@ -20,6 +21,32 @@ def company_details(request):
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.all().select_related('athlete')
     serializer_class = RunSerializer
+
+
+class StartRunView(APIView):
+    def patch(self, request, run_id):
+        run = get_object_or_404(Run, id=run_id)
+        serializer = RunSerializer(run)
+        if run.status != 'init':
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = RunSerializer(run, data={'status': 'in_progress'}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+        
+
+class StopRunView(APIView):
+    def patch(self, request, run_id):
+        run = get_object_or_404(Run, id=run_id)
+        serializer = RunSerializer(run)
+        if run.status != 'in_progress':
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = RunSerializer(run, data={'status': 'finished'}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
