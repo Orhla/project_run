@@ -24,7 +24,7 @@ class RunViewSet(viewsets.ModelViewSet):
 
 
 class StartRunView(APIView):
-    def patch(self, request, run_id):
+    def post(self, request, run_id):
         run = get_object_or_404(Run, id=run_id)
         serializer = RunSerializer(run)
         if run.status != 'init':
@@ -37,7 +37,7 @@ class StartRunView(APIView):
         
 
 class StopRunView(APIView):
-    def patch(self, request, run_id):
+    def post(self, request, run_id):
         run = get_object_or_404(Run, id=run_id)
         serializer = RunSerializer(run)
         if run.status != 'in_progress':
