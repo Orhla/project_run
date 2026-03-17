@@ -5,11 +5,22 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 from .models import Run
 from django.contrib.auth.models import User
 from .serializers import RunSerializer, UserSerializer
 
-# Create your views here.
+
+# Paginations classes
+class RunPagination(PageNumberPagination):
+    page_size_query_param = 'size'
+
+class UserPagination(PageNumberPagination):
+    page_size_query_param = 'size'
+
+# Views
 @api_view(['GET'])
 def company_details(request):
     details = {'company_name': settings.COMPANY_NAME,
@@ -21,6 +32,10 @@ def company_details(request):
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.all().select_related('athlete')
     serializer_class = RunSerializer
+    pagination_class = RunPagination
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['status', 'athlete']
+    ordering_fields = ['created_at']
 
 
 class StartRunView(APIView):
@@ -52,8 +67,10 @@ class StopRunView(APIView):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filter_backends = [SearchFilter]
+    pagination_class = UserPagination
+    filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['first_name', 'last_name']
+    ordering_fields = ['date_joined']
 
     def get_queryset(self):
         qs = self.queryset
