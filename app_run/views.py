@@ -20,6 +20,7 @@ class RunPagination(PageNumberPagination):
 class UserPagination(PageNumberPagination):
     page_size_query_param = 'size'
 
+
 # Views
 @api_view(['GET'])
 def company_details(request):
