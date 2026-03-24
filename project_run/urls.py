@@ -32,4 +32,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api/runs/<int:run_id>/start/', views.StartRunView.as_view()),
     path('api/runs/<int:run_id>/stop/', views.StopRunView.as_view()),
+    path('api/athlete_info/<int:user_id>/', views.AthleteInfoSet.as_view()),
 ] + debug_toolbar_urls()

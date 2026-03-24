@@ -8,9 +8,9 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-from .models import Run
+from .models import Run, AthleteInfo
 from django.contrib.auth.models import User
-from .serializers import RunSerializer, UserSerializer
+from .serializers import RunSerializer, UserSerializer, AthleteInfoSerializer
 
 
 # Paginations classes
@@ -81,3 +81,22 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         elif type == 'coach':
             qs = qs.filter(is_staff=True)
         return qs.exclude(is_superuser=True)
+    
+
+class AthleteInfoSet(APIView):
+    queryset = AthleteInfo.objects.all()
+    serializer_class = AthleteInfoSerializer
+    
+    def put(self, request, user_id):
+        athlete = get_object_or_404(User, id=user_id)
+        weight = request.query_params.get('weight', 0)
+        if not (0 < int(weight) < 900):
+            return Response(weight, status=status.HTTP_400_BAD_REQUEST)
+        goals = request.query_params.get('goals')
+        athlete_info, created = AthleteInfo.objects.update_or_create(user_id=athlete, defaults={'weight': weight, 'goals': goals})
+        return Response(self.serializer_class(athlete_info).data, status=status.HTTP_201_CREATED)
+
+    def get(self, request, user_id):
+        athlete = get_object_or_404(User, id=user_id)
+        athlete_info, created = AthleteInfo.objects.get_or_create(user_id=athlete)
+        return Response(self.serializer_class(athlete_info).data)

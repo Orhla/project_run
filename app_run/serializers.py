@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db.models import Count
 from django.db.models import Q
 from django.contrib.auth.models import User
-from .models import Run
+from .models import Run, AthleteInfo
 
 class AthleteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,3 +34,10 @@ class UserSerializer(serializers.ModelSerializer):
     def get_runs_finished(self, obj):
         return obj.__class__.objects.select_related('run').values('id').\
             annotate(runs_finished=Count('run', filter=Q(run__status='finished'))).filter(id=obj.id)[0]['runs_finished']
+    
+
+class AthleteInfoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = AthleteInfo
+        fields = '__all__'
