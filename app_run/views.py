@@ -90,8 +90,9 @@ class AthleteInfoSet(APIView):
     def put(self, request, user_id):
         athlete = get_object_or_404(User, id=user_id)
         weight = request.query_params.get('weight')
-        if not weight or not weight.isdigit() or not (0 < int(weight) < 900):
-            return Response(weight, status=status.HTTP_400_BAD_REQUEST)
+        if weight:
+            if not weight.isdigit() or not (0 < int(weight) < 900):
+                return Response(weight, status=status.HTTP_400_BAD_REQUEST)
         goals = request.query_params.get('goals')
         athlete_info, created = AthleteInfo.objects.update_or_create(user_id=athlete, defaults={'weight': weight, 'goals': goals})
         return Response(self.serializer_class(athlete_info).data, status=status.HTTP_201_CREATED)
