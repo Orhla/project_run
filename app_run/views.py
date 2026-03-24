@@ -99,5 +99,5 @@ class AthleteInfoSet(APIView):
 
     def get(self, request, user_id):
         athlete = get_object_or_404(User, id=user_id)
-        athlete_info, created = AthleteInfo.objects.get_or_create(user_id=athlete)
+        athlete_info, created = AthleteInfo.objects.get_or_create(user_id=athlete, weight=None, goals=None)
         return Response(self.serializer_class(athlete_info).data)
