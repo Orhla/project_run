@@ -8,9 +8,9 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-from .models import Run, AthleteInfo
+from .models import Run, AthleteInfo, Challenge
 from django.contrib.auth.models import User
-from .serializers import RunSerializer, UserSerializer, AthleteInfoSerializer
+from .serializers import RunSerializer, UserSerializer, AthleteInfoSerializer, ChallengeSerializer, ChallengeForAthleteSerializer
 
 
 # Paginations classes
@@ -102,3 +102,18 @@ class AthleteInfoSet(APIView):
         athlete = get_object_or_404(User, id=user_id)
         athlete_info, created = AthleteInfo.objects.get_or_create(user_id=athlete, defaults={'weight': None, 'goals': None})
         return Response(self.serializer_class(athlete_info).data)
+    
+
+class ChallengeViewSet(viewsets.ModelViewSet):
+    queryset = Challenge.objects.all()
+    serializer_class = ChallengeSerializer
+
+
+class ChallengeForAthleteSet(APIView):
+    queryset = Challenge.objects.all()
+    serializer_class = ChallengeForAthleteSerializer
+
+    def get_queryset(self):
+        athlete_id = self.request.query_params.get('athlete', None)
+        queryset = Challenge.objects.filter(athlete=athlete_id)
+        return queryset
