@@ -66,7 +66,7 @@ class ChallengeSerializer(serializers.ModelSerializer):
     #         return challenge
         
 
-class ChallengeForAthleteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Challenge
-        fields = '__all__'
+# class ChallengeForAthleteSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Challenge
+#         fields = '__all__'
