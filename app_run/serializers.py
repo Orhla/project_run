@@ -40,8 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
             Challenge.objects.create(full_name='Сделай 10 Забегов!', athlete=obj)
         return temp_runs_finished
     
-        # return obj.__class__.objects.select_related('run').filter(id=obj.id).filter(run__status='finished').count()
-    
 
 class AthleteInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,24 +47,7 @@ class AthleteInfoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ChallengeSerializer(serializers.ModelSerializer):
-    athlete_data = UserSerializer(read_only=True, source='athlete')
-
+class ChallengeSerializer(serializers.ModelSerializer):   
     class Meta:
         model = Challenge
         fields = '__all__'
-
-    # def create(self, validated_data):
-    #     # finished_runs_count = obj.__class__.objects.select_related('user').filter(runs_finished=10)
-    #     finished_runs_count = validated_data.pop('athlete_data')
-    #     return Challenge.objects.create(full_name='Сделай 10 Забегов!', athlete=self.athlete_data.id)
-    #     print(finished_runs_count)
-    #     if self.athlete_data.runs_finished == 10:
-    #         challenge = Challenge.objects.create(full_name='Сделай 10 Забегов!', athlete=self.athlete_data.id)
-    #         return challenge
-        
-
-# class ChallengeForAthleteSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Challenge
-#         fields = '__all__'

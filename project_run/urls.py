@@ -25,7 +25,6 @@ from app_run import views
 router = DefaultRouter()
 router.register('api/runs', views.RunViewSet)
 router.register('api/users', views.UserViewSet)
-router.register('api/challenges', views.ChallengeViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,5 +33,5 @@ urlpatterns = [
     path('api/runs/<int:run_id>/start/', views.StartRunView.as_view()),
     path('api/runs/<int:run_id>/stop/', views.StopRunView.as_view()),
     path('api/athlete_info/<int:user_id>/', views.AthleteInfoSet.as_view()),
-    path('api/challenges/?athlete=<int:user_id>', views.ChallengeForAthleteSet.as_view()),
+    path('api/challenges/', views.ChallengeViewSet.as_view()),
 ] + debug_toolbar_urls()
