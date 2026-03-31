@@ -62,6 +62,10 @@ class StopRunView(APIView):
             serializer = RunSerializer(run, data={'status': 'finished'}, partial=True)
             if serializer.is_valid():
                 serializer.save()
+                user = run.athlete
+                runs_finished = UserSerializer(user).data['runs_finished']
+                if runs_finished >= 10 and not Challenge.objects.filter(athlete=user.id).exists():
+                    Challenge.objects.create(full_name='Сделай 10 Забегов!', athlete=user)
                 return Response(serializer.data)
 
 
