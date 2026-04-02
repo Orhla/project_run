@@ -36,8 +36,6 @@ class UserSerializer(serializers.ModelSerializer):
         #     annotate(runs_finished=Count('run', filter=Q(run__status='finished'))).filter(id=obj.id)[0]['runs_finished']
 
         temp_runs_finished = obj.__class__.objects.select_related('run').filter(id=obj.id).filter(run__status='finished').count()
-        # if temp_runs_finished == 10 and not Challenge.objects.filter(athlete=obj.id).exists():
-        #     Challenge.objects.create(full_name='Сделай 10 Забегов!', athlete=obj)
         return temp_runs_finished
     
 
