@@ -120,6 +120,8 @@ class ChallengeViewSet(APIView):
             return Response(ChallengeSerializer(user).data)
             # return Response(ChallengeSerializer(get_object_or_404(Challenge, athlete=user_id)).data)
         except Challenge.DoesNotExist:
+            if user_id:
+                return Response([])
             for user in User.objects.all():
                 runs_finished = UserSerializer(user).data['runs_finished']
                 if not Challenge.objects.filter(athlete=user.id).exists() and runs_finished >= 10:
