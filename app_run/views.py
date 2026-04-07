@@ -105,9 +105,6 @@ class AthleteInfoSet(APIView):
     
 
 class ChallengeViewSet(APIView):
-    queryset = Challenge.objects.all()
-    serializer_class = ChallengeSerializer
-
     def get(self, request):
         for user in User.objects.all():
             runs_finished = UserSerializer(user).data['runs_finished']

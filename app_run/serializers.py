@@ -48,4 +48,4 @@ class AthleteInfoSerializer(serializers.ModelSerializer):
 class ChallengeSerializer(serializers.ModelSerializer):   
     class Meta:
         model = Challenge
-        fields = '__all__'
+        fields = ['full_name', 'athlete']
