@@ -112,11 +112,12 @@ class ChallengeViewSet(APIView):
                 Challenge.objects.create(full_name='Сделай 10 Забегов!', athlete=user)
         user_id = request.query_params.get('athlete', None)
         # if user_id:
-        try:
-            user = Challenge.objects.get(athlete=user_id)
-            return Response(ChallengeSerializer(user).data)
+        if user_id:
+            # user = Challenge.objects.get(athlete=user_id)
+            user = Challenge.objects.filter(athlete=user_id)
+            if user:
+                return Response(ChallengeSerializer(user, many=True).data)
             # return Response(ChallengeSerializer(get_object_or_404(Challenge, athlete=user_id)).data)
-        except Challenge.DoesNotExist:
-            if user_id:
-                return Response({})            
-            return Response(ChallengeSerializer(Challenge.objects.all(), many=True).data)
+        
+            return Response([])
+        return Response(ChallengeSerializer(Challenge.objects.all(), many=True).data)
